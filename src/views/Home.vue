@@ -50,7 +50,7 @@
           <td>{{ item.month }}</td>
           <td>{{ item.number }}</td>
           <td>{{ item.isWinner }}</td>
-          <td>{{ item.amount }}</td>
+          <td>{{ item.amount | toThousands }}</td>
         </tr>
       </tbody>
     </table>
@@ -173,6 +173,19 @@ export default {
       this.checkingNumber = ''
     },
   },
-  filters: {},
+  filters: {
+    toThousands(num) {
+      num = (num || 0).toString()
+      let result = ''
+      while (num.length > 3) {
+        result = ',' + num.slice(-3) + result
+        num = num.slice(0, num.length - 3)
+      }
+      if (num) {
+        result = num + result
+      }
+      return result
+    },
+  },
 }
 </script>
