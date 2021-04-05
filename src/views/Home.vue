@@ -19,8 +19,11 @@
         maxlength="3"
       />
       <div class="text-center py-5">
-        <button type="submit" class="btn btn-primary ">
-          查詢
+        <button type="submit" class="btn btn-primary" :disabled="checking">
+          <div class="spinner-border text-light" role="status" v-if="checking">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <div v-if="!checking">查詢</div>
         </button>
       </div>
     </form>
@@ -68,9 +71,8 @@ export default {
       checkingMonth: '',
       checkingNumber: '',
       months: [],
-      // [{value: '11-12 2020', text: '2020年11-12月'}]
       results: [],
-      // {month, number, isWin, amount}
+      checking: false,
       furtherInput: '',
       winningPossibility: false,
       jackpotNumber: '',
@@ -92,6 +94,7 @@ export default {
   methods: {
     handleSubmit() {
       console.log('submit')
+      this.checking = true
       if (!this.checkingMonth) {
         return alert('請選擇查詢月份')
       }
@@ -115,6 +118,9 @@ export default {
             this.possiblyWinnings = response.data.amount
             this.possiblyWinningPrize = response.data.prize
           }
+        })
+        .then(() => {
+          this.checking = false
         })
     },
     furtherCheckWinnings() {
