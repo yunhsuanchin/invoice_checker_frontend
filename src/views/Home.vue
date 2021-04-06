@@ -4,7 +4,7 @@
     <form ref="form" @submit.stop.prevent="handleSubmit">
       <select class="form-control my-5" v-model="checkingMonth">
         <option
-          v-for="(item, index) in months"
+          v-for="(item, index) in shownPeriod"
           :key="item.value"
           :value="item.value"
           :selected="index === 0"
@@ -29,6 +29,7 @@
     </form>
 
     <form
+      class="py-3"
       v-show="winningPossibility"
       @submit.prevent.stop="furtherCheckWinnings"
     >
@@ -68,9 +69,14 @@ export default {
   name: 'Home',
   data() {
     return {
+      today: '',
+      period: ['01-02', '03-04', '05-06', '07-08', '09-10', '11-12'],
+      shownPeriod: [
+        { value: '11-12 2020', text: '2020年11-12月' },
+        { value: '01-02 2021', text: '2021年01-02月' },
+      ],
       checkingMonth: '',
       checkingNumber: '',
-      months: [],
       results: [],
       checking: false,
       furtherInput: '',
@@ -81,17 +87,22 @@ export default {
     }
   },
   created() {
-    axios.get(BASE_URL).then((response) => {
-      response.data.forEach((item) => {
-        this.months.push({
-          value: item,
-          text: `${item.slice(-4)}年${item.slice(0, 5)}月`,
-        })
-      })
-      this.months.reverse()
-    })
+    this.today = new Date()
+    // axios.get(BASE_URL).then((response) => {
+    //   response.data.forEach((item) => {
+    //     this.months.push({
+    //       value: item,
+    //       text: `${item.slice(-4)}年${item.slice(0, 5)}月`,
+    //     })
+    //   })
+    //   this.months.reverse()
+    // })
+    this.checkAvailablePeriod()
   },
   methods: {
+    // checkAvailablePeriod() {
+    //   const currentMonth =
+    // },
     handleSubmit() {
       console.log('submit')
       this.checking = true
@@ -110,7 +121,6 @@ export default {
         .then((response) => {
           console.log('response', response)
           if (!response.data.isWinner || response.data.amount === 200) {
-            // 不需要furtherCheck：沒中獎、中增開六獎
             this.showResult(response.data.isWinner, response.data.amount)
           } else {
             this.winningPossibility = true
@@ -124,9 +134,9 @@ export default {
         })
     },
     furtherCheckWinnings() {
-      // 1. 可能中special prize：要全部符合
-      // 2. 可能中grand prize：要全部符合
-      // 3. 可能中first prize：看中幾碼
+      if (this.furtherInput.length !== 8) {
+        return alert('請確認發票號碼是否輸入正確')
+      }
       let matchResult = []
       let amount = 0
       const array1 = this.furtherInput.split('')
