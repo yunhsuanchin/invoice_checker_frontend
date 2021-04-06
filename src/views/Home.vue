@@ -19,7 +19,11 @@
         maxlength="3"
       />
       <div class="text-center py-5">
-        <button type="submit" class="btn btn-primary" :disabled="checking">
+        <button
+          type="submit"
+          class="btn btn-primary"
+          :disabled="winningPossibility"
+        >
           <div class="spinner-border text-light" role="status" v-if="checking">
             <span class="sr-only">Loading...</span>
           </div>
@@ -97,7 +101,7 @@ export default {
     //   })
     //   this.months.reverse()
     // })
-    this.checkAvailablePeriod()
+    // this.checkAvailablePeriod()
   },
   methods: {
     // checkAvailablePeriod() {
