@@ -81,7 +81,7 @@ export default {
       ],
       checkingMonth: '',
       checkingNumber: '',
-      results: [],
+      results: JSON.parse(localStorage.getItem('results')) || [],
       checking: false,
       furtherInput: '',
       winningPossibility: false,
@@ -89,6 +89,10 @@ export default {
       possiblyWinnings: '',
       possiblyWinningPrize: '',
     }
+  },
+  computed: {
+    currentMonth: this.today.getMonth() + 1,
+    currentDate: this.today.getDate(),
   },
   created() {
     this.today = new Date()
@@ -125,7 +129,7 @@ export default {
         .then((response) => {
           console.log('response', response)
           if (!response.data.isWinner || response.data.amount === 200) {
-            this.showResult(response.data.isWinner, response.data.amount)
+            this.saveResult(response.data.isWinner, response.data.amount)
           } else {
             this.winningPossibility = true
             this.jackpotNumber = response.data.invoice
@@ -176,20 +180,22 @@ export default {
             amount = 200
         }
       }
-      this.showResult(true, amount)
+      this.saveResult(true, amount)
       this.jackpotNumber = ''
       this.furtherInput = ''
       this.winningPossibility = false
       this.possiblyWinnings = ''
       this.possiblyWinningPrize = ''
     },
-    showResult(isWinner, amount) {
+    saveResult(isWinner, amount) {
       this.results.push({
         month: this.checkingMonth,
         number: this.checkingNumber,
         isWinner: isWinner ? '是' : '否',
         amount: amount ? amount : 0,
       })
+      localStorage.setItem('results', JSON.stringify(this.results))
+
       this.checkingNumber = ''
     },
   },
