@@ -42,6 +42,15 @@
       <button class="btn-primary ml-1">提交</button>
     </form>
 
+    <div class="row mt-5 mb-3">
+      <div class="col">
+        <span>查詢次數：{{ queryingCount }}</span>
+      </div>
+      <div class="col">
+        <span>中獎次數：{{ winningCount }}</span>
+      </div>
+    </div>
+
     <table class="table" v-show="results.length">
       <thead>
         <tr>
@@ -91,10 +100,14 @@ export default {
     }
   },
   computed: {
-    currentMonth: this.today.getMonth() + 1,
-    currentDate: this.today.getDate(),
+    queryingCount() {
+      return this.results.length
+    },
+    winningCount() {
+      return this.results.filter((item) => item.amount !== 0).length
+    },
   },
-  created() {
+  mounted() {
     this.today = new Date()
     // axios.get(BASE_URL).then((response) => {
     //   response.data.forEach((item) => {
