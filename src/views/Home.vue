@@ -175,9 +175,8 @@ export default {
             amount = 200
         }
       }
-      this.saveResult(true, amount)
+      this.saveResult(amount, amount)
       this.jackpotNumber = ''
-      this.furtherInput = ''
       this.winningPossibility = false
       this.possiblyWinnings = ''
       this.possiblyWinningPrize = ''
@@ -185,13 +184,14 @@ export default {
     saveResult(isWinner, amount) {
       this.results.push({
         month: this.checkingMonth,
-        number: this.checkingNumber,
+        number: this.furtherInput ? this.furtherInput : this.checkingNumber,
         isWinner: isWinner ? '是' : '否',
         amount: amount ? amount : 0,
       })
       localStorage.setItem('results', JSON.stringify(this.results))
 
       this.checkingNumber = ''
+      this.furtherInput = ''
     },
   },
   filters: {
