@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <h1 class="text-center">Invoice Checker</h1>
-    <form ref="form" @submit.stop.prevent="handleSubmit">
+    <form @submit.stop.prevent="handleSubmit">
       <select class="form-control my-5" v-model="checkingMonth">
         <option
           v-for="(item, index) in shownPeriod"
@@ -85,10 +85,10 @@ export default {
       today: '',
       period: ['01-02', '03-04', '05-06', '07-08', '09-10', '11-12'],
       shownPeriod: [
-        { value: '11-12 2020', text: '2020年11-12月' },
         { value: '01-02 2021', text: '2021年01-02月' },
+        { value: '11-12 2020', text: '2020年11-12月' },
       ],
-      checkingMonth: '',
+      checkingMonth: '01-02 2021',
       checkingNumber: '',
       results: JSON.parse(localStorage.getItem('results')) || [],
       checking: false,
@@ -109,23 +109,9 @@ export default {
   },
   mounted() {
     this.today = new Date()
-    // axios.get(BASE_URL).then((response) => {
-    //   response.data.forEach((item) => {
-    //     this.months.push({
-    //       value: item,
-    //       text: `${item.slice(-4)}年${item.slice(0, 5)}月`,
-    //     })
-    //   })
-    //   this.months.reverse()
-    // })
-    // this.checkAvailablePeriod()
   },
   methods: {
-    // checkAvailablePeriod() {
-    //   const currentMonth =
-    // },
     handleSubmit() {
-      console.log('submit')
       this.checking = true
       if (!this.checkingMonth) {
         return alert('請選擇查詢月份')
@@ -140,7 +126,6 @@ export default {
           checkingNumber: this.checkingNumber,
         })
         .then((response) => {
-          console.log('response', response)
           if (!response.data.isWinner || response.data.amount === 200) {
             this.saveResult(response.data.isWinner, response.data.amount)
           } else {
@@ -167,15 +152,12 @@ export default {
         matchResult.push(array1[i] === array2[j])
         j++
       }
-      console.log('match', matchResult)
       const differenceNumIndex = matchResult.lastIndexOf(false)
-      console.log('differenceNumIndex', differenceNumIndex)
       if (differenceNumIndex === -1) {
         amount = this.possiblyWinnings
       } else if (this.possiblyWinningPrize !== 'First Prize') {
         amount = 0
       } else {
-        console.log('switch')
         switch (differenceNumIndex) {
           case 0:
             amount = 40000
@@ -224,6 +206,13 @@ export default {
         result = num + result
       }
       return result
+    },
+  },
+  watch: {
+    checkingNumber() {
+      if (this.checkingNumber.length === 3) {
+        this.handleSubmit()
+      }
     },
   },
 }
