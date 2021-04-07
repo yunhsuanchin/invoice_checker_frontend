@@ -19,16 +19,9 @@
         maxlength="3"
       />
       <div class="text-center py-5">
-        <button
-          type="submit"
-          class="btn btn-primary"
-          :disabled="winningPossibility"
-        >
-          <div class="spinner-border text-light" role="status" v-if="checking">
-            <span class="sr-only">Loading...</span>
-          </div>
-          <div v-if="!checking">查詢</div>
-        </button>
+        <div class="spinner-border text-primary" role="status" v-if="checking">
+          <span class="sr-only">Loading...</span>
+        </div>
       </div>
     </form>
 
